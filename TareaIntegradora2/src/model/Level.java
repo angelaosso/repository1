@@ -88,23 +88,20 @@ public class Level {
     }
 
     /**
-     * Description: Adds a determined amount of treasures to the treasures array
+     * Description: Adds a treasure to the treasures array
      * @param newTreasure Treasure
-     * @param treasureAmount int
      * @return boolean
      * pre: The treasures array has capacity
      * pos: Treasures stored in the treasures array
      */
-    public boolean addTreasure(Treasure newTreasure, int treasureAmount){
-        for (int j = 0; j <= treasureAmount; j++){
+    public boolean addTreasure(Treasure newTreasure){
             for (int i = 0; i < treasures.length; i++){
                 if (treasures[i] == null){
                     treasures[i] = newTreasure;
                     treasurePoints += newTreasure.getPoints();
-
+                    return true;
                 }
             }
-        }
         return true;
     }
 
@@ -167,6 +164,16 @@ public class Level {
             difficulty = Difficulty.HIGH;
         }
         return "The level's difficulty now is: " + difficulty;
+    }
+
+    public String showTreasures(){
+        String list = "";
+        for (int i = 0; i < treasures.length; i++){
+            if (treasures[i] != null){
+                list+= (i + 1) + treasures[i].getName() + "\n";
+            }
+        }
+        return list;
     }
 
 }

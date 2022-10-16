@@ -1,5 +1,7 @@
 package ui;
 import java.util.Scanner;
+
+import model.EnemyType;
 import model.VideoGameController;
 import java.util.Random;
 import java.lang.Math;
@@ -10,6 +12,7 @@ public class VideoGameManager {
     static Scanner reader = new Scanner(System.in);
     public static VideoGameController gameController = new VideoGameController();
     public static Random rand = new Random();
+    private static Object EnemyType;
 
     public static void main(String[] args){
 
@@ -17,9 +20,8 @@ public class VideoGameManager {
 
     }
 
-
     /**
-     * Shows the main menu of the app and the menus of each of the game's elements.
+     * Shows the main menu of the app and the menus of each of the game's elements
      */
     public static void menu(){
         System.out.println("Choose your screen resolution: ");
@@ -40,7 +42,8 @@ public class VideoGameManager {
                     "2: Level\n" +
                     "3: Enemy\n" +
                     "4: Treasure\n" +
-                    "5: Exit app\n");
+                    "5: Reports\n" +
+                    "6: Exit app\n");
             String userMenuChoice = reader.nextLine();
 
             switch (userMenuChoice){
@@ -154,6 +157,33 @@ public class VideoGameManager {
                     }
                     break;
                 case "5":
+
+                    switch (reportMenu()){
+                        case "1":
+                            System.out.println(reportTreasuresEnemies());
+                            break;
+                        case "2":
+                            System.out.println(treasureTypeReport());
+                            break;
+                        case "3":
+                            System.out.println(enemyTypeReport());
+                            break;
+                        case "4":
+                            System.out.println(reportMostRepeatedTreasure());
+                            break;
+                        case "5":
+                            System.out.println(reportPowerfulEnemy());
+                            break;
+                        case "6":
+                            System.out.println(reportEnemiesConsonants());
+                            break;
+                        case "7":
+                            System.out.println(top5Report());
+
+                    }
+                    break;
+
+                case "6":
                     System.out.println("Signed out :)");
                     exitApp = true;
             }
@@ -207,6 +237,19 @@ public class VideoGameManager {
         System.out.println("""
                 1: Create treasure
                 2: List of treasures
+                """);
+        return reader.nextLine();
+    }
+
+    public static String reportMenu(){
+        System.out.println("""
+                1: List of treasures and enemies of a level
+                2: Amount of a treasure type in all levels
+                3: Amount of an enemy type in all levels
+                4: Most repeated treasure in all levels
+                5: Most powerful enemy
+                6: Amount of consonants in the enemies' names
+                7: Players Top 5
                 """);
         return reader.nextLine();
     }
@@ -306,10 +349,7 @@ public class VideoGameManager {
         double points = reader.nextInt();
         reader.nextLine();
 
-        double positionX =  Math.ceil((Math.random() + 1) * gameController.getScreenResolution()[0]);
-        double positionY =  Math.ceil((Math.random() + 1) * gameController.getScreenResolution()[1]);
-
-        return gameController.createTreasure(name, url, points, positionX, positionY);
+        return gameController.createTreasure(name, url, points);
 
     }
 
@@ -431,14 +471,71 @@ public class VideoGameManager {
     }
 
 
+    public static String treasureTypeReport(){
+        System.out.println("Number of a treasure in the whole game\n");
+        System.out.println("Choose the treasure type that you want to investigate\n");
+
+        System.out.println(gameController.treasuresToString());
+
+        int treasureNumber = reader.nextInt();
+
+        int treasureCount = gameController.treasureTypeReport(treasureNumber);
+
+        if (treasureCount == 0){
+            return "There are no " + gameController.getTreasures()[treasureNumber - 1].getName() + " in the game\n";
+        }
+        else {
+            return  "There are " + treasureCount + gameController.getTreasures()[treasureNumber - 1].getName() + "(s) in the game";
+        }
+    }
+
+    public static String enemyTypeReport(){
+        System.out.println("Number of an enemy of a certain type in the whole game\n");
+        System.out.println("Choose the enemy type that you want to investigate\n");
+
+        System.out.println(gameController.enemyTypeToString());
+
+        int enemyNumber = reader.nextInt();
+
+        int enemyCount = gameController.enemyTypeReport(enemyNumber);
+
+        if (enemyCount == 0){
+            return "There are no " + gameController.getEnemyType(enemyNumber) + " in the game\n";
+        }
+        else {
+            return  "There are " + enemyCount + gameController.getEnemies()[enemyNumber - 1].getType() + "(s) in the game";
+        }
+    }
+
+    public static String reportPowerfulEnemy(){
+        return  gameController.findMostPowerfulEnemy();
+    }
+
+    public static String reportEnemiesConsonants(){
+        int consonantsNumber = gameController.calculateConsonantsInEnemies();
+        return "There are " + consonantsNumber + " consonants in the enemies' names";
+    }
+
+    public static String reportTreasuresEnemies(){
+        System.out.println("Treasures and enemies of a level");
+
+        System.out.println("Select the level");
+        System.out.println(gameController.levelsToString());
+
+        int chosenLevel = reader.nextInt();
+
+        return gameController.treasuresEnemiesReport(chosenLevel);
+        }
 
 
+    public static String reportMostRepeatedTreasure(){
+        return gameController.showMostRepeatedTreasures(gameController.findMostRepeatedTreasure());
+    }
 
-
-
-
-
-
-
+    public static String top5Report (){
+        return gameController.showTop5(gameController.sortPlayersArray());
+    }
 
 }
+
+

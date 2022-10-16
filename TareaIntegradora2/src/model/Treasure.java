@@ -7,11 +7,10 @@ public class Treasure{
     private double points;
     private double[] position;
 
-    public Treasure(String name, String url, double points, double positionX, double positionY){
+    public Treasure(String name, String url, double points){
         this.name = name;
         this.url = url;
         this.points = points;
-        this.position = new double[]{positionX, positionY};
     }
 
     public String getName() {
