@@ -47,7 +47,11 @@ public class NeoTunesManager {
                 1. Register user\s
                 2. Register audio\s
                 3. Create playlist\s
-                4. Edit playlist
+                4. Edit playlist\s
+                5. Share playlist\s
+                6. Buy song\s
+                7. Play audio\s
+                8. Reports\s
                 0. Close app
                 """);
         menuChoice = reader.nextInt();
@@ -77,6 +81,18 @@ public class NeoTunesManager {
                 break;
             case 4:
                 System.out.println(editPlaylist());
+                break;
+            case 5:
+                System.out.println(sharePlaylist());
+                break;
+            case 6:
+                System.out.println(buySong());
+                break;
+            case 7:
+                System.out.println(playAudio());
+                break;
+            case 8:
+                executeReport(reportMenu());
                 break;
             default:
                 System.out.println("Choose a valid option");
@@ -307,7 +323,7 @@ public class NeoTunesManager {
             if (editOption == 1){
 
                 System.out.println("Choose the audio that you want to add to the playlist: \n");
-                System.out.println(controller.showAudios());
+                System.out.println(controller.showAudios(3));
                 int audioChoice = reader.nextInt();
                 reader.nextLine();
 
@@ -326,6 +342,157 @@ public class NeoTunesManager {
         }
         return "The chosen user does not have any playlists";
     }
+
+    public String sharePlaylist(){
+        System.out.println("Share a playlist\n");
+        System.out.println("Choose the consumer that wants to share a playlist: \n");
+        System.out.println(controller.showConsumers());
+        int consumerIndex = reader.nextInt();
+        reader.nextLine();
+
+        System.out.println("Choose the playlist that the consumer wants to share: \n");
+        System.out.println(controller.showConsumersPlaylists(consumerIndex));
+        int playlistIndex = reader.nextInt();
+        reader.nextLine();
+
+        return controller.sharePlaylist(consumerIndex, playlistIndex);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String buySong(){
+        System.out.println("Buy song");
+
+        System.out.println("Choose the consumer that wants to buy a song: \n");
+        System.out.println(controller.showConsumers());
+        int consumerIndex = reader.nextInt();
+        reader.nextLine();
+
+        System.out.println("Choose the song that the consumer wants to buy: \n");
+        System.out.println(controller.showAudios(1));
+        int songIndex = reader.nextInt();
+        reader.nextLine();
+
+        if (controller.buySong(consumerIndex, songIndex)){
+            return "Song successfully bought";
+        }
+        else {
+            return "Error. Song could not be bough";
+        }
+    }
+
+    public String playAudio(){
+        System.out.println("Play audio");
+        System.out.println("Choose the consumer that wants to play an audio");
+        System.out.println(controller.showConsumers());
+        int consumerIndex = reader.nextInt();
+        reader.nextLine();
+
+        System.out.println("Choose the type of audio\n" +
+                "1. Songs \n" +
+                "2. Podcasts \n");
+        int audioChoice = reader.nextInt();
+        reader.nextLine();
+
+        System.out.println(controller.showAudios(audioChoice));
+        int audioIndex = reader.nextInt();
+        reader.nextLine();
+
+        return controller.playAudio(consumerIndex, audioIndex);
+    }
+
+    /**
+     * Shows the list of possible reports in the platform and asks the user to choose one of them
+     * @return int
+     */
+    public int reportMenu(){
+
+        System.out.println("""
+                Choose the type of report:\s
+                1. Total number of reproductions of each audio type\s
+                2. Most listened song genre in the platform\s
+                3. Most listened song genre by specific user\s
+                4. Most listened podcast category in the platform\s
+                5. Most listened podcast category by specific user\s
+                6. Top 5 of artists and content creators in the platform\s
+                7. Top 10 of songs and podcasts in the platform\s
+                8. Number of songs sold for each genre\s
+                9. Song with greatest number of sales in the platform""");
+
+        int reportChoice = reader.nextInt();
+        reader.nextLine();
+        return reportChoice;
+    }
+
+    public void executeReport(int reportChoice){
+
+        switch (reportChoice){
+            case 1:
+                System.out.println(controller.reportNumberOfReprodAudios());
+                break;
+            case 2:
+                System.out.println(reportMostListenedSongGenre());
+                break;
+            case 3:
+                System.out.println(reportMostListenedGenreUser());
+                break;
+            case 4:
+                System.out.println(reportMostListenedPodcastCategory());
+                break;
+            case 5:
+                System.out.println(reportMostListenedCategoryUser());
+                break;
+            case 6:
+                System.out.println(controller.reportTop5Producers());
+                break;
+            case 7:
+                System.out.println(controller.reportTop10Audios());
+                break;
+            case 8:
+                System.out.println(controller.reportGenreSoldSongs());
+                break;
+            case 9:
+                System.out.println(controller.reportMostSoldSong(controller.findMostSoldSong()));
+                break;
+            default:
+                System.out.println("Choose a valid option");
+                break;
+        }
+
+    }
+
+    public String reportMostListenedGenreUser(){
+        System.out.println("Most listened genre by a specific user\n");
+        System.out.println("Choose the user that you want to analyze: \n");
+        System.out.println(controller.showConsumers());
+        int consumerIndex = reader.nextInt();
+        reader.nextLine();
+
+        return controller.reportMostListenedGenreUser(consumerIndex);
+    }
+
+    public String reportMostListenedCategoryUser(){
+        System.out.println("Most listened category by a specific user\n");
+        System.out.println("Choose the user that you want to analyze: \n");
+        System.out.println(controller.showConsumers());
+        int consumerIndex= reader.nextInt();
+        reader.nextLine();
+
+        return controller.reportMostListenedCategoryUser(consumerIndex);
+    }
+
+    public String reportMostListenedSongGenre(){
+        return "The most listened song genre(s): \n" +
+                controller.reportMostListenedGenreCategory(1);
+    }
+
+    public String reportMostListenedPodcastCategory(){
+        return "The most listened podcast category: \n" +
+                controller.reportMostListenedGenreCategory(2);
+    }
+
 
     /**
      * Shows a list of the song genres

@@ -10,4 +10,18 @@ public class Podcast extends Audio{
         this.description = description;
         this.category = category;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    @Override
+    public String play(){
+        return "The podcast " + getName() + " is playing...";
+    }
+
 }
